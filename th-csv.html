@@ -4,7 +4,7 @@
 <link rel="import" href="../csv-preview/csv-preview.html">
 
 
-<polymer-element name="th-csv" attributes="url filter_row_from filter_row_to filter_col_from filter_col_to data filteredData" thelma>
+<polymer-element name="th-csv" attributes="url filter_row_from filter_row_to filter_col_from filter_col_to data output" thelma>
 
   <template>
   </template>
@@ -17,7 +17,7 @@
       Polymer('th-csv', {
         url: '',
         data: null,
-        filteredData: null,
+        output: null,
         filter_row_from: -1,
         filter_row_to: -1,
         filter_col_from: -1,
@@ -63,13 +63,13 @@
 
                 console.log(fromCol);
 
-                self.filteredData = self.data.filter(function(d, i) {
+                self.output = self.data.filter(function(d, i) {
                     if(i + 1>= from  && i + 1<= to  ) {
                       console.log(i);
                       return d;
                     }
                 });
-                self.filteredData = self.filteredData.map(function(d, i) {
+                self.output = self.output.map(function(d, i) {
                       
                       var copy = {}; //JSON.parse(JSON.stringify(d));
                       var colIndex = 0;
@@ -88,7 +88,7 @@
 
               }
               else {
-                self.filteredData = self.data;
+                self.output = self.data;
               }
           }
         },
@@ -111,7 +111,7 @@
                   },
                   "outputAttr": {
                     "data":{"friendly":"Data", "type":"json"},
-                    "filteredData":{"friendly":"Data after filtering", "type":"json"}
+                    "output":{"friendly":"Data after filtering", "type":"json"}
                   }
                 }
             }
