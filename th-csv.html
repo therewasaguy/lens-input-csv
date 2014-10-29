@@ -4,7 +4,7 @@
 <link rel="import" href="../csv-preview/csv-preview.html">
 
 
-<polymer-element name="th-csv" attributes="url filter_row_from filter_row_to filter_col_from filter_col_to data filteredData chartDataOutput" thelma>
+<polymer-element name="th-csv" attributes="url filter_row_from filter_row_to filter_col_from filter_col_to data filteredData" thelma>
 
   <template>
   </template>
@@ -22,7 +22,6 @@
         filter_row_to: -1,
         filter_col_from: -1,
         filter_col_to: -1,
-        chartDataOutput: [],
         observe: {
           filter_row_from: 'filterCsv',
           filter_row_to: 'filterCsv',
@@ -91,27 +90,10 @@
               else {
                 self.filteredData = self.data;
               }
-              self.createChartData();
           }
         },
 
         // this should be done by another component which getting the metadata of both does the conversion
-        createChartData: function() {
-
-          var self = this;
-
-          self.chartDataOutput = []; 
-
-          var firstRow = self.filteredData[0];
-          for(key in firstRow) {
-            self.chartDataOutput.push({label: key, value: firstRow[key]});
-
-          }
-          console.log(self.chartDataOutput);
-
-
-
-        },
           getMetaData: function() {
                 return {
                   "name": "th-csv",
@@ -129,8 +111,7 @@
                   },
                   "outputAttr": {
                     "data":{"friendly":"Data", "type":"json"},
-                    "filteredData":{"friendly":"Data after filtering", "type":"json"},
-                    "chartDataOutput":{"friendly":"Data for chart", "type":"json"},
+                    "filteredData":{"friendly":"Data after filtering", "type":"json"}
                   }
                 }
             }
