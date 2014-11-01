@@ -1,17 +1,54 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../core-ajax/core-ajax.html">
 <link rel="import" href="../core-input/core-input.html">
+<link rel="import" href="../core-selector/core-selector.html">
+<link rel="import" href="../core-collapse/core-collapse.html">
+<link rel="import" href="../core-icon-button/core-icon-button.html">
 <link rel="import" href="../csv-preview/csv-preview.html">
 
 
 <polymer-element name="th-csv" attributes="url filter_row_from filter_row_to filter_col_from filter_col_to data output" thelma>
 
   <template>
+    <style>
+        #ctrl_collapse {
+          width: 250px;
+        }
+        .elTitle {
+          color: #2fa3af;
+          padding: 2px;
+        }
+        label {
+          color: #2fa3af;
+        }
+        core-input {
+          border: 1px solid #eee;
+          padding: 2px;
+        }
+
+
+
+    </style>
+    <span class="elTitle">th-csv</span>
+
+    <core-icon-button icon="perm-data-setting" on-click="{{showControls}}"></core-icon-button>
+    <core-icon-button icon="view-list" on-click="{{showResults}}" class="{{ {disabled: !hasData} | tokenList}}"></core-icon-button>
+
+
+    <core-collapse id="ctrl_collapse">
+      <label>Source</label><core-input value="{{url}}" placeHolder="http://sepans.com/misc/test.csv"></core-input>
+      <label>From row</label><core-input value="{{filter_row_from}}" ></core-input>
+      <label>To row</label><core-input value="{{filter_row_to}}" ></core-input>
+
+    </core-collapse>
+    <core-collapse id="results_collapse">
+      <csv-preview data="{{output}}"></csv-preview>
+
+    </core-collapse>
   </template>
   
 
 
-  <script src="../d3/d3.min.js"></script> 
   <script>
 
       Polymer('th-csv', {
@@ -114,7 +151,7 @@
                     "output":{"friendly":"Data after filtering", "type":"json"}
                   }
                 }
-            }
+            },
 
 /*
         dataReady: function(d) {
@@ -126,6 +163,16 @@
           //this.$.preview.dataChanged();
         }
         */
+       
+      showControls: function(e) {
+          this.$.ctrl_collapse.toggle();
+      } ,
+
+      showResults: function(e) {
+          this.$.results_collapse.toggle();
+      } 
+
+
       
       });
 
