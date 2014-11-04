@@ -6,7 +6,6 @@
 <link rel="import" href="../core-icon-button/core-icon-button.html">
 <link rel="import" href="../csv-preview/csv-preview.html">
 
-
 <polymer-element name="th-csv" attributes="url filter_row_from filter_row_to filter_col_from filter_col_to data output" thelma>
 
   <template>
@@ -48,7 +47,7 @@
   </template>
   
 
-
+  <script src="../../d3/d3.min.js"></script> 
   <script>
 
       Polymer('th-csv', {
@@ -80,9 +79,9 @@
           var corsurl = self.url.replace(/(ftp|http|https):\/\//,'http://www.corsproxy.com/');
           //var corsurl = 'http://whateverorigin.org/get?url='+self.url;
           //self.$.ajax.url = corsurl;
-
+          console.log(corsurl);
           d3.csv(corsurl, function(d) {
-            
+            console.log(d);
             self.data = d;
             self.filterCsv();
           });

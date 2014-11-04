@@ -8,6 +8,7 @@
     "polymer-ui-accordion": "PolymerLabs/polymer-ui-accordion#~0.3.0",
     "csv-preview": "~1.0.0",
     "core-input": "Polymer/core-input#~0.3.4",
-    "core-selector": "Polymer/core-selector#0.3.4"
+    "core-selector": "Polymer/core-selector#0.3.4",
+    "d3": "~3.4.13"
   }
 }
