@@ -169,7 +169,11 @@
 
       showResults: function(e) {
           this.$.results_collapse.toggle();
-      } 
+      },
+      outputChanged: function(){
+        console.log("csv output changed");
+        this.fire('th-output-changed', this);
+      }
 
 
       
