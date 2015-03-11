@@ -4,7 +4,7 @@
 <link rel="import" href="../core-icon-button/core-icon-button.html">
 <link rel="import" href="../csv-preview/csv-preview.html">
 
-<polymer-element name="th-csv" attributes="url filter_row_from filter_row_to filter_col_from filter_col_to data output" thelma>
+<polymer-element name="lens-input-csv" attributes="url filter_row_from filter_row_to filter_col_from filter_col_to data output" thelma>
 
   <template>
     <style>
@@ -47,7 +47,7 @@
   <script src="../d3/d3.min.js"></script> 
   <script>
 
-      Polymer('th-csv', {
+      Polymer('lens-input-csv', {
         url: '',
         data: null,
         output: null,
@@ -129,7 +129,7 @@
         // this should be done by another component which getting the metadata of both does the conversion
           getMetaData: function() {
                 return {
-                  "name": "th-csv",
+                  "name": "lens-input-csv",
                   "description": "Fetches CSV from a source plus ability to filter rows/columns ",
                   "category":"data",
                   "version": "0.0.1",
