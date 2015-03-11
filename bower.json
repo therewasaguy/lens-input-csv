@@ -1,8 +1,8 @@
 {
-  "name": "thelma-meta-components",
+  "name": "lens-input-csv",
   "version": "0.0.0",
-  "keywords": "seed, polymer, web-components",
-  "main": "thelma-meta-components.html",
+  "keywords": "lenses, polymer, web-components",
+  "main": "lens-input-csv.html",
   "dependencies": {
     "polymer": "Polymer/polymer#~0.5.1",
     "csv-preview": "~1.0.0",
