@@ -71,7 +71,7 @@ CSV Data loader component to load and parse online CSV files. If the API returns
 
             self.output = d;
             this.fire('lens-output-changed', this);
-          });
+          }.bind(this));
         }
 
       
