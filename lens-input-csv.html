@@ -61,11 +61,14 @@ CSV Data loader component to load and parse online CSV files. If the API returns
          */
         output: null,
 
+        _CORS_PROXY: 'http://makelenses.com:8000/',
+
 
         urlChanged: function() {
           var self = this;
 
-          var corsurl = self.url.replace(/(ftp|http|https):\/\//,'http://makelenses.com:8000/');
+          var corsurl = self.url.replace(/(ftp|http|https):\/\//, '');
+          corsurl = self._CORS_PROXY + corsurl;
           d3.csv(corsurl, function(d) {
             console.log(d);
 
