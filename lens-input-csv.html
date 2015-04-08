@@ -80,8 +80,7 @@ CSV Data loader component to load and parse online CSV files. If the API returns
           d3.csv(corsurl, function(d) {
             console.log(d);
 
-            self.output = d;
-            this.fire('lens-output-changed', this);
+            self._setOutput(d);
           }.bind(this));
         },
 
@@ -131,15 +130,22 @@ CSV Data loader component to load and parse online CSV files. If the API returns
 
           var newOutput = [];
 
+          // parses one row at a time...
           d3.csv.parse(csvString, function(d) {
             newOutput.push(d);
 
+            // ...so only setOutput when it has reached full size
             if (newOutput.length === numRows) {
-              self.output = newOutput;
-              self.fire('lens-output-changed', this);
-              console.log('done!');
+              self._setOutput(newOutput);
             }
           }.bind(self));
+        },
+
+        // change output and fire lens-output-changed
+        _setOutput: function(data) {
+          var self = this;
+          self.output = data;
+          self.fire('lens-output-changed', self);
         }
     });
 
