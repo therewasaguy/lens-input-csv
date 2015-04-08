@@ -1,25 +1,93 @@
-<!--
-    @license
-    Copyright (c) 2014 Thelma Project Authors. All rights reserved.
-    This code may only be used under the MIT license found at http://lenses.github.io/LICENSE.txt
-    The complete set of authors may be found at http://lenses.github.io//AUTHORS.txt
-    The complete set of contributors may be found at http://lenses.github.io/CONTRIBUTORS.txt
--->
 <!doctype html>
 <html>
-<head>
-  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-  <title>lens-input-csv Demo</title>
+  <head>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>lens-input-simple-api Demo</title>
+    <script src="../webcomponentsjs/webcomponents.js"></script>
+    <link rel="import" href="lens-input-csv.html">
 
-  <script src="../webcomponentsjs/webcomponents.js"></script>
-  <link rel="import" href="lens-input-csv.html">
+    <style>
+      body {
+        font-family: sans-serif;
+        font-size: 14px;
+      }
 
-</head>
-<body unresolved>
+      pre {
+        border: 1px solid #EEE;
+        font-size: 12px;
+        max-width: 300px;
+        max-height: 300px;
+        overflow: scroll;
 
-  <p>An example of using <code>&lt;lens-input-csv></code>:</p>
+      }
+      #component {
+        border: 1px solid #BBB;
+        margin: 10px;
+        padding: 5px;
+        display: block;
+        width: 300px;
+      }
 
-  <lens-input-csv animateOnInit="true"></lens-input-csv>
+      .component::before, .component::after {
+        content: '\2794';
+        position: absolute;
+        top: 50%;
+      }
+      .component::before {
+        right: -15px;
+      }
 
-</body>
+      .component::after {
+        left: -15px;
+      }
+
+      section {
+        display: inline-block;
+        margin: 8px;
+        vertical-align: top;
+        position: relative;
+      }
+      html /deep/ input[is=core-input] {
+        border-bottom: 1px solid #E5E5E5 !important;
+      }
+
+    </style>
+
+    <script>
+      PolymerExpressions.prototype.json = function(object) {
+        return JSON.stringify(object, undefined, 2);
+      };
+    </script>
+
+  </head>
+  <body unresolved>
+
+    <template id="auto-bind-demo" is="auto-binding">
+
+
+    <p>This component can input CSV files.</p>
+
+    <p> Enter the URL to import a CSV, for example :</p>
+    <pre>assets/berlin.csv</pre>
+    <p> or </p>
+    <pre>assets/airports.csv</pre>
+
+      <section class="component">
+        <label>Component:</label>
+        <lens-input-csv id="component" url="./assets/berlin.csv" output="{{myoutput}}"></lens-input-csv>
+      </section>
+
+
+      <section>
+        <label>Original CSV Output:</label>
+        <csv-preview id="input" data="{{myoutput}}"></csv-preview>
+<!--         <pre id="input">{{input | json}}</pre>
+ -->      </section>
+      <section>
+        <label>Flattened JSON Output:</label>
+        <pre>{{myoutput | json}}</pre>
+      </section>
+
+    </template>
+  </body>
 </html>

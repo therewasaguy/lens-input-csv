@@ -4,13 +4,25 @@
 <link rel="import" href="../core-icon-button/core-icon-button.html">
 <link rel="import" href="../csv-preview/csv-preview.html">
 
+
+<!--
+Input component for importing CSV data
+
+##### Example
+
+    <lens-input-csv url="assets/airports.csv"></lens-input-csv>
+
+@element lens-input-csv
+@blurb Input component for importing CSV data
+@status alpha
+@homepage http://lenses.github.io/lens-input-simple-api
+-->
+
+
 <polymer-element name="lens-input-csv" attributes="url filter_row_from filter_row_to filter_col_from filter_col_to data output" thelma>
 
   <template>
     <style>
-        #ctrl_collapse {
-          width: 250px;
-        }
         .elTitle {
           color: #2fa3af;
           padding: 2px;
@@ -22,25 +34,22 @@
           border: 1px solid #eee;
           padding: 2px;
         }
-
-
-
     </style>
 
-    <core-icon-button icon="perm-data-setting" on-click="{{showControls}}"></core-icon-button>
-    <core-icon-button icon="view-list" on-click="{{showResults}}" class="{{ {disabled: !hasData} | tokenList}}"></core-icon-button>
+    <div class="lens-container lens-input">
 
+        <label>Source</label><input is="core-input" value="{{url}}" placeHolder="assets/berlin.csv">
+        <label>From row</label><input is="core-input" value="{{filter_row_from}}" >
+        <label>To row</label><input is="core-input" value="{{filter_row_to}}" >
+        <label>From column</label><input is="core-input" value="{{filter_col_from}}" >
+        <label>To column</label><input is="core-input" value="{{filter_col_to}}" >
 
-    <core-collapse id="ctrl_collapse">
-      <label>Source</label><input is="core-input" value="{{url}}" placeHolder="http://sepans.com/misc/test.csv">
-      <label>From row</label><input is="core-input" value="{{filter_row_from}}" >
-      <label>To row</label><input is="core-input" value="{{filter_row_to}}" >
+        <div><label class="label">Num Records: </label><div class="data">{{output.length}}</div></div>
 
-    </core-collapse>
-    <core-collapse id="results_collapse">
-      <csv-preview data="{{output}}"></csv-preview>
+        <!-- make data avail, was with with core-collapse -->
+        <csv-preview data="{{output}}" hidden></csv-preview>
+    </div>
 
-    </core-collapse>
   </template>
   
 
@@ -48,13 +57,74 @@
   <script>
 
       Polymer('lens-input-csv', {
+
+        /**
+         *  Path to CSV file.
+         *
+         *  @property url
+         *  @type String
+         *  @default ''
+         */
         url: '',
-        data: null,
-        output: null,
+
+        /**
+         *  Input data.
+         *  
+         *  @property data
+         *  @type Object
+         *  @default undefined
+         */
+        data: undefined,
+
+        /**
+         *  [output description]
+         *
+         *  @property output
+         *  @type Object
+         *  @default undefined
+         */
+        output: undefined,
+
+        /**
+         *  Filter which rows of the CSV to include.
+         *  Defaults to -1 (min).
+         *  
+         *  @property filter_row_from
+         *  @type Number
+         *  @default -1
+         */
         filter_row_from: -1,
+
+        /**
+         *  Filter which rows of the CSV to include.
+         *  Defaults to -1 (max).
+         *  
+         *  @property filter_row_to
+         *  @type Number
+         *  @default -1
+         */
         filter_row_to: -1,
+
+        /**
+         *  Filter which columns of the CSV to include.
+         *  Defaults to -1 (min).
+         *  
+         *  @property filter_col_from
+         *  @type Number
+         *  @default -1
+         */
         filter_col_from: -1,
+
+        /**
+         *  Filter which columns of the CSV to include.
+         *  Defaults to -1 (max).
+         *  
+         *  @property filter_col_to
+         *  @type Number
+         *  @default -1
+         */
         filter_col_to: -1,
+
         observe: {
           filter_row_from: 'filterCsv',
           filter_row_to: 'filterCsv',
@@ -66,10 +136,8 @@
           var self = this;
           console.log('de csv');
           console.log(this.url);
-
-
-
         },
+
         urlChanged: function() {
           var self = this;
 
@@ -159,16 +227,8 @@
           //this.$.preview.dataChanged();
         }
         */
-       
-      showControls: function(e) {
-          this.$.ctrl_collapse.toggle();
-      } ,
 
-      showResults: function(e) {
-          this.$.results_collapse.toggle();
-      },
       outputChanged: function(){
-        console.log("csv output changed");
         this.fire('th-output-changed', this);
       }
 
