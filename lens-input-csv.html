@@ -19,6 +19,15 @@ CSV Data loader component to load and parse online CSV files. If the API returns
 <polymer-element name="lens-input-csv" attributes="url output">
 
   <template>
+  <style>
+    label {
+      color: #2fa3af;
+    }
+    core-input {
+      border: 1px solid #eee;
+      padding: 2px;
+    }
+  </style>
 
     <div class="lens-container lens-input">
       <label>URL</label><input is="core-input" value="{{url}}" placeHolder="CSV file URL">
@@ -43,7 +52,7 @@ CSV Data loader component to load and parse online CSV files. If the API returns
          *  If the file is hosted online,
          *  the url should begin with <code>http://</code>, <code>https://</code> or <code>ftp://</code>.
          *
-         *  @property "url"
+         *  @property url
          *  @type String
          *  @default ''
          */
@@ -52,7 +61,7 @@ CSV Data loader component to load and parse online CSV files. If the API returns
         /**
          *  Output data
          *
-         *  @property "output"
+         *  @property output
          *  @type Object
          *  @default undefined
          */
