@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../core-input/core-input.html">
+<link rel="import" href="../core-icons/core-icons.html">
 
 <!--
 CSV Data loader component to load and parse online CSV files. If the API returns JSON with a header followed by an array of results, the results become the <code>output</code>.
@@ -21,6 +22,12 @@ CSV Data loader component to load and parse online CSV files. If the API returns
 
     <div class="lens-container lens-input">
       <label>URL</label><input is="core-input" value="{{url}}" placeHolder="CSV file URL">
+
+      <span id="upload" on-click="{{uDialog}}">
+        <core-icon icon="file-upload"></core-icon>
+
+        <label>Upload a File</label><input is="core-input" id="uploadInput" type="file" hidden value="">
+      </span>
 <!--       <div><label class="label">Num Records: </label><div class="data">{{output.length}}</div></div> -->
     </div>
 
@@ -57,6 +64,12 @@ CSV Data loader component to load and parse online CSV files. If the API returns
           var self = this;
           console.log('de csv');
           console.log(this.url);
+
+          // setup the upload input
+          self.$.uploadInput.onchange = function(e) {
+            self._handleFileSelect(e, self);
+          };
+
         },
 
         urlChanged: function() {
@@ -70,8 +83,56 @@ CSV Data loader component to load and parse online CSV files. If the API returns
             self.output = d;
             this.fire('lens-output-changed', this);
           }.bind(this));
-        }
+        },
 
+        uDialog: function(e) {
+          var self = this;
+          self.$.uploadInput.click();
+        },
+
+        _handleFileSelect: function(e, scope) {
+          // console.log(e, scope);
+          var self = scope;
+          var file = self.$.uploadInput.files[0];
+
+          var reader = new FileReader();
+
+          reader.onload = function(e) {
+            var csvString = e.target.result.trim();
+            var inputRows = csvString.split('\n');
+
+            // in case .trim() did not remove white space...TO DO: test this.
+            // for (var r = 0; r < inputRows.length; r++) {
+            //   if (inputRows[r].length <=2) {
+            //     inputRows.splice(r, 1);
+            //   }
+            // }
+
+            // total number or rows = inputRows - header
+            var numRows = inputRows.length - 1;
+            console.log(numRows);
+            var newOutput = [];
+
+            d3.csv.parse(csvString, function(d) {
+              newOutput.push(d);
+
+              if (newOutput.length === numRows) {
+                self.output = newOutput;
+                self.fire('lens-output-changed', this);
+                console.log('done!');
+              }
+            }.bind(self));
+
+
+          }
+          reader.onerror = function(e) {
+            console.log('error loading file: ' + e);
+          }
+
+
+          reader.readAsText(file);
+
+        }
     });
 
   </script>
