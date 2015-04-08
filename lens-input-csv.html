@@ -1,57 +1,30 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../core-input/core-input.html">
-<link rel="import" href="../core-collapse/core-collapse.html">
-<link rel="import" href="../core-icon-button/core-icon-button.html">
-<link rel="import" href="../csv-preview/csv-preview.html">
-
 
 <!--
-Input component for importing CSV data
+CSV Data loader component to load and parse online CSV files. If the API returns JSON with a header followed by an array of results, the results become the <code>output</code>.
 
 ##### Example
 
-    <lens-input-csv url="assets/airports.csv"></lens-input-csv>
+    <lens-input-csv url="https://data.cityofnewyork.us/api/views/8586-3zfm/rows.csv?accessType=DOWNLOAD"></lens-input-csv>
 
 @element lens-input-csv
-@blurb Input component for importing CSV data
+@group Lenses input component
+@blurb CSV Data loader component to load and parse online CSV files.
 @status alpha
-@homepage http://lenses.github.io/lens-input-simple-api
+@homepage http://lenses.github.io/lens-input-csv
 -->
 
-
-<polymer-element name="lens-input-csv" attributes="url filter_row_from filter_row_to filter_col_from filter_col_to data output" thelma>
+<polymer-element name="lens-input-csv" attributes="url output">
 
   <template>
-    <style>
-        .elTitle {
-          color: #2fa3af;
-          padding: 2px;
-        }
-        label {
-          color: #2fa3af;
-        }
-        core-input {
-          border: 1px solid #eee;
-          padding: 2px;
-        }
-    </style>
 
     <div class="lens-container lens-input">
-
-        <label>Source</label><input is="core-input" value="{{url}}" placeHolder="assets/berlin.csv">
-        <label>From row</label><input is="core-input" value="{{filter_row_from}}" >
-        <label>To row</label><input is="core-input" value="{{filter_row_to}}" >
-        <label>From column</label><input is="core-input" value="{{filter_col_from}}" >
-        <label>To column</label><input is="core-input" value="{{filter_col_to}}" >
-
-        <div><label class="label">Num Records: </label><div class="data">{{output.length}}</div></div>
-
-        <!-- make data avail, was with with core-collapse -->
-        <csv-preview data="{{output}}" hidden></csv-preview>
+      <label>URL</label><input is="core-input" value="{{url}}" placeHolder="CSV file URL">
+<!--       <div><label class="label">Num Records: </label><div class="data">{{output.length}}</div></div> -->
     </div>
 
   </template>
-  
 
   <script src="../d3/d3.min.js"></script> 
   <script>
@@ -59,78 +32,26 @@ Input component for importing CSV data
       Polymer('lens-input-csv', {
 
         /**
-         *  Path to CSV file.
+         *  URL path to CSV file.
+         *  If the file is hosted online,
+         *  the url should begin with <code>http://</code>, <code>https://</code> or <code>ftp://</code>.
          *
-         *  @property url
+         *  @property "url"
          *  @type String
          *  @default ''
          */
         url: '',
 
         /**
-         *  Input data.
-         *  
-         *  @property data
-         *  @type Object
-         *  @default undefined
-         */
-        data: undefined,
-
-        /**
-         *  [output description]
+         *  Output data
          *
-         *  @property output
+         *  @property "output"
          *  @type Object
          *  @default undefined
          */
         output: undefined,
 
-        /**
-         *  Filter which rows of the CSV to include.
-         *  Defaults to -1 (min).
-         *  
-         *  @property filter_row_from
-         *  @type Number
-         *  @default -1
-         */
-        filter_row_from: -1,
-
-        /**
-         *  Filter which rows of the CSV to include.
-         *  Defaults to -1 (max).
-         *  
-         *  @property filter_row_to
-         *  @type Number
-         *  @default -1
-         */
-        filter_row_to: -1,
-
-        /**
-         *  Filter which columns of the CSV to include.
-         *  Defaults to -1 (min).
-         *  
-         *  @property filter_col_from
-         *  @type Number
-         *  @default -1
-         */
-        filter_col_from: -1,
-
-        /**
-         *  Filter which columns of the CSV to include.
-         *  Defaults to -1 (max).
-         *  
-         *  @property filter_col_to
-         *  @type Number
-         *  @default -1
-         */
-        filter_col_to: -1,
-
-        observe: {
-          filter_row_from: 'filterCsv',
-          filter_row_to: 'filterCsv',
-          filter_col_from: 'filterCsv',
-          filter_col_to: 'filterCsv'
-        },
+        _CORS_PROXY: 'http://makelenses.com:8000/',
 
         ready: function() {
           var self = this;
@@ -141,100 +62,17 @@ Input component for importing CSV data
         urlChanged: function() {
           var self = this;
 
-          var corsurl = self.url.replace(/(ftp|http|https):\/\//,'http://www.corsproxy.com/');
-          //var corsurl = 'http://whateverorigin.org/get?url='+self.url;
-          //self.$.ajax.url = corsurl;
-          console.log(corsurl);
+          var corsurl = self.url.replace(/(ftp|http|https):\/\//, self._CORS_PROXY);
+
           d3.csv(corsurl, function(d) {
             console.log(d);
-            self.data = d;
-            self.filterCsv();
-          });
-        },
 
-        filterCsv: function() {
-          var self = this;
-          if(self.data) {
-              if(self.filter_row_from>0 || self.filter_row_to>0 || self.filter_col_from>0 || self.filter_col_to>0) {
-                var from = self.filter_row_from>0 ? self.filter_row_from : 1;
-                var to = self.filter_row_to>0 ? self.filter_row_to : self.data.length + 1;
-
-                var fromCol = self.filter_col_from>0 ? self.filter_col_from : 1;
-                var toCol = self.filter_col_to>0 ? self.filter_col_to : self.data.length + 1;
-
-                console.log(fromCol);
-
-                self.output = self.data.filter(function(d, i) {
-                    if(i + 1>= from  && i + 1<= to  ) {
-                      console.log(i);
-                      return d;
-                    }
-                });
-                self.output = self.output.map(function(d, i) {
-                      
-                      var copy = {}; //JSON.parse(JSON.stringify(d));
-                      var colIndex = 0;
-                      for(key in d) {
-                        if(colIndex + 1>= fromCol  && colIndex + 1<= toCol  ) {
-                          copy[key] = d[key];
-                        }
-
-
-                        colIndex++;
-
-                      }
-                      console.log(copy);
-                      return copy;
-                });
-
-              }
-              else {
-                self.output = self.data;
-              }
-          }
-        },
-
-        // this should be done by another component which getting the metadata of both does the conversion
-          getMetaData: function() {
-                return {
-                  "name": "lens-input-csv",
-                  "description": "Fetches CSV from a source plus ability to filter rows/columns ",
-                  "category":"data",
-                  "version": "0.0.1",
-                  "thumbnail":"csv.jpg", 
-                  "tags":["csv", "data"],
-                  "inputAttr": {
-                    "url":{"friendly":"URL", "type":"String", "default":"", "hint": "http://sepans.com/misc/test.csv"},
-                    "filter_row_from":{"friendly":"Filter Rows From Index", "type":"int", "default":0},
-                    "filter_row_to":{"friendly":"Filter Rows To Index", "type":"int", "default":0},
-                    "filter_col_from":{"friendly":"Filter Columns From Index", "type":"int", "default":0},
-                    "filter_col_to":{"friendly":"Filter Columns To Index", "type":"int", "default":0}
-                  },
-                  "outputAttr": {
-                    "data":{"friendly":"Data", "type":"json"},
-                    "output":{"friendly":"Data after filtering", "type":"json"}
-                  }
-                }
-            },
-
-/*
-        dataReady: function(d) {
-          console.log('data ready');
-          console.log(d.detail.response);
-          this.data = d.detail.response;
-          console.log(this.$.preview);
-          //this.$.preview.data = this.data;
-          //this.$.preview.dataChanged();
+            self.output = d;
+            this.fire('lens-output-changed', this);
+          }.bind(this));
         }
-        */
 
-      outputChanged: function(){
-        this.fire('th-output-changed', this);
-      }
-
-
-      
-      });
+    });
 
   </script>
 </polymer-element>

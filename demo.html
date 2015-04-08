@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
-    <title>lens-input-simple-api Demo</title>
+    <title>lens-input-csv Demo</title>
     <script src="../webcomponentsjs/webcomponents.js"></script>
     <link rel="import" href="lens-input-csv.html">
 
@@ -51,43 +51,49 @@
         border-bottom: 1px solid #E5E5E5 !important;
       }
 
-    </style>
+      .count {
+        float: right;
+        font-size: 12px;
+      }
 
-    <script>
-      PolymerExpressions.prototype.json = function(object) {
-        return JSON.stringify(object, undefined, 2);
-      };
-    </script>
+    </style>
 
   </head>
   <body unresolved>
 
     <template id="auto-bind-demo" is="auto-binding">
+      <script>
+      PolymerExpressions.prototype.json = function(object) {
+        return JSON.stringify(object, undefined, 2);
+      };
+      </script>
 
 
-    <p>This component can input CSV files.</p>
+    <p>CSV Data loader component to load and parse online CSV files. If the API returns JSON with a header followed by an array of results</p>
 
     <p> Enter the URL to import a CSV, for example :</p>
     <pre>assets/berlin.csv</pre>
     <p> or </p>
     <pre>assets/airports.csv</pre>
+    <p> or </p>
+    <pre>https://data.cityofnewyork.us/api/views/8hkx-uppz/rows.csv?accessType=DOWNLOAD</pre>
 
       <section class="component">
         <label>Component:</label>
-        <lens-input-csv id="component" url="./assets/berlin.csv" output="{{myoutput}}"></lens-input-csv>
+          <lens-input-csv id="component" output="{{myoutput}}"></lens-input-csv>
       </section>
 
-
       <section>
-        <label>Original CSV Output:</label>
-        <csv-preview id="input" data="{{myoutput}}"></csv-preview>
-<!--         <pre id="input">{{input | json}}</pre>
- -->      </section>
-      <section>
-        <label>Flattened JSON Output:</label>
+        <label>CSV Output:</label><span class="count">{{myoutput.length}} records</span>
         <pre>{{myoutput | json}}</pre>
       </section>
 
+      <script>
+        var component = document.querySelector('#component');
+        component.url = 'https://data.cityofnewyork.us/api/views/8hkx-uppz/rows.csv?accessType=DOWNLOAD';
+
+      </script>
     </template>
   </body>
 </html>
+
