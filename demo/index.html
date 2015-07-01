@@ -47,10 +47,10 @@
         vertical-align: top;
         position: relative;
       }
-      html /deep/ input[is=core-input] {
+/*      html /deep/ input[is=core-input] {
         border-bottom: 1px solid #E5E5E5 !important;
       }
-
+*/
       .count {
         float: right;
         font-size: 12px;
@@ -84,8 +84,10 @@
 
     <script>
 
+      var component;
+
       window.onload = function() {
-        var component = document.querySelector('#component');
+        component = document.querySelector('#component');
         var preInput = document.getElementById('input');
         var preOutput = document.getElementById('output');
 
@@ -96,13 +98,18 @@
 
         // update output
         document.addEventListener('lens-output-changed', function(e) {
-          var elem = e.detail;
+          var srcElem = e.srcElement || e.originalTarget;
+          var output = e.detail;
+          console.log(e);
 
           // make sure the event was fired from the component we are watching
-          if (elem === component) {
+          if (srcElem === component) {
+            console.log('same el');
             // if it was, update output...
-            var output = elem.output;
             preOutput.textContent = JSON.stringify(output, undefined, 2);
+          } else {
+            console.log('diffffel');
+
           }
         });
 

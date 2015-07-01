@@ -34,18 +34,18 @@
         done();
       });
 
-      test("set csv url", function(done) {
+      test("set csv urlPath", function(done) {
 
         // set the event listener callback
         myEl.removeEventListener("lens-output-changed", callback);
         callback = function(e) {
-          myEl.url.should.equal(nycDataUrl);
+          myEl.urlPath.should.equal(nycDataUrl);
           done();
         };
         myEl.addEventListener("lens-output-changed", callback);
 
-        // set input url
-        myEl.url = nycDataUrl;
+        // set input urlPath
+        myEl.urlPath = nycDataUrl;
 
         // fire th-outputReady event
         flush(function() {
@@ -82,10 +82,8 @@
         myEl.addEventListener("lens-output-changed", callback);
 
         // create a File
-        var f = new File([csvFileData], "myFile.csv", {type: "text/csv"})
-        myEl.$.uploadInput.files[0] = f;
-
-        myEl._handleFileSelect(f, myEl);
+        var f = new File([csvFileData], "myFile.csv", {type: "text/csv"});
+        myEl._parseFile(f);
 
       });
 
@@ -94,9 +92,7 @@
 
         // create a File
         var f = new File([csvFileData], "myFile.m4a", {type: "audio/m4a"})
-        myEl.$.uploadInput.files[0] = f;
-
-        myEl._handleFileSelect(f, myEl);
+        myEl._parseFile(f);
 
         flush(function() {
           myEl.output.should.eql(output);

@@ -18,7 +18,7 @@ If the API returns JSON with a header followed by an array of results, the resul
 @demo
 -->
 
-<dom-module name="lens-input-csv" attributes="url output">
+<dom-module name="lens-input-csv" attributes="urlPath output">
 
   <template>
   <style>
@@ -32,7 +32,7 @@ If the API returns JSON with a header followed by an array of results, the resul
   </style>
 
     <div class="lens-container lens-input">
-      <label>URL</label><input is="core-input" value="{{url::input}}" placeHolder="CSV file URL">
+      <label>URL</label><input is="iron-input" value="{{urlPath::input}}" placeHolder="CSV file URL">
 
       <span id="upload" on-click="_uploadDialog">
         <iron-icon icon="file-upload"></iron-icon>
@@ -48,22 +48,22 @@ If the API returns JSON with a header followed by an array of results, the resul
 
 <script>
 
-    Polymer({
-      is: 'lens-input-csv',
+  Polymer({
+    is: 'lens-input-csv',
 
     properties: {
         /**
-         *  URL path to CSV file.
+         *  URL path to CSV file or API call that returns CSV.
          *  If the file is hosted online,
          *  the url should begin with <code>http://</code>, <code>https://</code> or <code>ftp://</code>.
          *
-         *  @property url
+         *  @property urlPath
          *  @type String
          *  @default ''
          */
-        url: {
-          type: String,
+        urlPath: {
           value: '',
+          type: String,
           observer: "_urlChanged"
         },
 
@@ -79,16 +79,19 @@ If the API returns JSON with a header followed by an array of results, the resul
           type: Object,
           observer: '_outputChanged'
         },
+
+        _CORS_PROXY: {
+          value: 'http://makelenses.com:8000/',
+          type: String
+        }
       },
-
-
-      _CORS_PROXY: 'http://makelenses.com:8000/',
 
       ready: function() {
         var self = this;
 
         // setup the upload input
         self.$.uploadInput.onchange = function(e) {
+          console.log(e);
           self._handleFileSelect(e, self);
         };
 
@@ -96,8 +99,9 @@ If the API returns JSON with a header followed by an array of results, the resul
 
       _urlChanged: function() {
         var self = this;
-        var corsurl = self.url.replace(/(ftp|http|https):\/\//, self._CORS_PROXY);
-        if (self.url === '') {
+        var corsurl = self.urlPath.replace(/(ftp|http|https):\/\//, self._CORS_PROXY);
+
+        if (self.urlPath === '') {
           return;
         }
         d3.csv(corsurl, function(d) {
@@ -116,7 +120,17 @@ If the API returns JSON with a header followed by an array of results, the resul
       // get selected file from <input id="uploadInput"> 
       _handleFileSelect: function(e, scope) {
         var self = scope;
-        var file = self.$.uploadInput.files[0];
+        var file = scope.$.uploadInput.files[0];
+        // if (typeof(file) == 'undefined') {
+        //   console.log(e);
+        //   // file = e.target.files[0];
+        // }
+        // var file = scope.$.uploadInput.files[0];
+        self._parseFile(file);
+      },
+
+      _parseFile: function(file) {
+        var self = this;
 
         // check mime type
         var mimes = ['application/vnd.ms-excel','text/plain','text/csv','text/tsv']
@@ -124,7 +138,7 @@ If the API returns JSON with a header followed by an array of results, the resul
           return file.type === mime;
         });
         if (!okMime) {
-          alert('Unable to upload: ' + file.name + ' is not a CSV file');
+          console.log('Unable to upload: ' + file.name + ' is not a CSV file');
           return;
         }
 
@@ -157,15 +171,15 @@ If the API returns JSON with a header followed by an array of results, the resul
 
           // ...so only set output when it has reached full size
           if (newOutput.length === numRows) {
+            self.urlPath = '';
             self.output = newOutput;
-            self.url = '';
           }
         }.bind(self));
       },
 
       _outputChanged: function() {
         var self = this;
-        self.fire('lens-output-changed', self);
+        self.fire('lens-output-changed', self.output);
       }
   });
 
