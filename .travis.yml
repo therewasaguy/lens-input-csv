@@ -1,6 +1,6 @@
 language: node_js
 node_js:
   - "0.10"
-before_install: npm install -g web-component-tester
-install: bower install
+before_install:
+	- npm install -g web-component-tester
 script: wct
