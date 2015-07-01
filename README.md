@@ -1,6 +1,6 @@
 lens-input-csv
 ================
-![Build Status](https://travis-ci.org/therewasaguy/lens-input-csv.svg?branch=travis)
+ [![Build Status](https://travis-ci.org/therewasaguy/lens-input-csv.svg?branch=travis)](https://travis-ci.org/therewasaguy/lens-input-csv)
 
 Input component to load and parse online CSV files. If the API returns JSON with a header followed by an array of results, the results become the <code>output</code>.
 
