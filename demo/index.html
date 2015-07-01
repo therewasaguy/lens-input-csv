@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>lens-input-csv Demo</title>
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="../lens-input-csv.html">
+
+    <style>
+      body {
+        font-family: sans-serif;
+        font-size: 14px;
+      }
+
+      pre {
+        border: 1px solid #EEE;
+        font-size: 12px;
+        max-width: 300px;
+        max-height: 300px;
+        overflow: scroll;
+
+      }
+      #component {
+        border: 1px solid #BBB;
+        margin: 10px;
+        padding: 5px;
+        display: block;
+        width: 300px;
+      }
+
+      .component::before, .component::after {
+        content: '\2794';
+        position: absolute;
+        top: 50%;
+      }
+      .component::before {
+        right: -15px;
+      }
+
+      .component::after {
+        left: -15px;
+      }
+
+      section {
+        display: inline-block;
+        margin: 8px;
+        vertical-align: top;
+        position: relative;
+      }
+      html /deep/ input[is=core-input] {
+        border-bottom: 1px solid #E5E5E5 !important;
+      }
+
+      .count {
+        float: right;
+        font-size: 12px;
+      }
+
+    </style>
+
+  </head>
+  <body unresolved>
+
+    <div>
+      <p>Load and parse CSV file from an external API / URL, or by uploading your own.</p>
+      <p> Enter the URL to import a CSV, for example :</p>
+      <pre>../assets/airports.csv</pre>
+      <p> or </p>
+      <pre>https://data.cityofnewyork.us/api/views/8hkx-uppz/rows.csv?accessType=DOWNLOAD</pre>
+    </div>
+
+    <section>
+      <label>Input:</label>
+      <pre id="input"></pre>
+    </section>
+    <section class="component">
+      <label>Component:</label>
+      <lens-input-csv id="component"></lens-input-csv>
+    </section>
+    <section>
+      <label>Output:</label>
+      <pre id="output"></pre>
+    </section>
+
+    <script>
+
+      window.onload = function() {
+        var component = document.querySelector('#component');
+        var preInput = document.getElementById('input');
+        var preOutput = document.getElementById('output');
+
+        //set the url
+        component.url = 'https://data.cityofnewyork.us/api/views/8hkx-uppz/rows.csv?accessType=DOWNLOAD';
+
+        preInput.textContent = JSON.stringify(component.input, undefined, 2);
+
+        // update output
+        document.addEventListener('lens-output-changed', function(e) {
+          var elem = e.detail;
+
+          // make sure the event was fired from the component we are watching
+          if (elem === component) {
+            // if it was, update output...
+            var output = elem.output;
+            preOutput.textContent = JSON.stringify(output, undefined, 2);
+          }
+        });
+
+      };
+
+    </script>
+
+    </template>
+  </body>
+</html>
+
